@@ -1,3 +1,5 @@
+config:
+  language: korean
 chunk-config:
   origin:
     x: null
