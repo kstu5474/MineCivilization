@@ -1,0 +1,8 @@
+chunk-config:
+  origin:
+    x: null
+    z: null
+  limit: null
+
+guild-config:
+  max-guild-member: 20

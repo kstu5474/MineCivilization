@@ -1,0 +1,26 @@
+name: minecivilization
+version: '1.0-SNAPSHOT'
+main: io.github.surang_volkov.minecivilization.MineCivilization
+api-version: '1.21.4'
+
+commands:
+  mcv:
+    description: mcv 명령어들
+    usage: /mcv <chunk|guild|reload|rules|test>
+
+permissions:
+  minecivilization.user:
+    description: 유저 기본 권한
+    default: true
+  minecivilization.vice:
+    description: 부마스터 권한
+    default: false
+  minecivilization.master:
+    description: 마스터 권한
+    default: false
+  minecivilization.manager:
+    description: 매니저 권한
+    default: false
+  minecivilization.dev:
+    description: 개발자 권한
+    default: op
