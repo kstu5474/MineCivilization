@@ -20,6 +20,7 @@ public class Guild implements SubCommand {
             case "invite":
                 break;
             case "leave":
+                commandSender.sendMessage("§e사용법: /mcv guild <invite|leave|kick|status|create|mandate|promote|demote|delete>");
                 break;
             case "kick":
                 break;
