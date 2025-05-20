@@ -18,6 +18,7 @@ public class Guild implements SubCommand {
         }
         switch (args[0].toLowerCase()){
             case "invite":
+                commandSender.sendMessage("어쩌고저쩌고");
                 break;
             case "leave":
                 break;
