@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import static io.github.surang_volkov.minecivilization.MineCivilization.errorLog;
 import static io.github.surang_volkov.minecivilization.MineCivilization.infoLog;
+import static io.github.surang_volkov.minecivilization.MineCivilization.instance;
 
 public class DataManager {
 
@@ -23,11 +24,11 @@ public class DataManager {
         guildsConfig = load(plugin, "guildsData.yml");
         userConfig = load(plugin, "userData.yml");
     }
-    public static void reload(JavaPlugin plugin) {
-        generalConfig = load(plugin, "generalConfig.yml");
-        chunkConfig = load(plugin, "chunkData.yml");
-        guildsConfig = load(plugin, "guildsData.yml");
-        userConfig = load(plugin, "userData.yml");
+    public static void reload() {
+        generalConfig = load(instance, "generalConfig.yml");
+        chunkConfig = load(instance, "chunkData.yml");
+        guildsConfig = load(instance, "guildsData.yml");
+        userConfig = load(instance, "userData.yml");
 
         infoLog("설정 파일들이 성공적으로 리로드되었습니다.");
     }
@@ -52,11 +53,11 @@ public class DataManager {
         return userConfig;
     }
     //전체 저장 메서드
-    public static void saveAll(JavaPlugin plugin) {
-        save(plugin, generalConfig, "generalConfig.yml");
-        save(plugin, chunkConfig, "chunkData.yml");
-        save(plugin, guildsConfig, "guildsData.yml");
-        save(plugin, userConfig, "userData.yml");
+    public static void saveAll() {
+        save(instance, generalConfig, "generalConfig.yml");
+        save(instance, chunkConfig, "chunkData.yml");
+        save(instance, guildsConfig, "guildsData.yml");
+        save(instance, userConfig, "userData.yml");
     }
     private static void save(JavaPlugin plugin, FileConfiguration config, String fileName) {
         try {

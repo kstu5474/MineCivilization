@@ -1,5 +1,6 @@
 package io.github.surang_volkov.minecivilization.tools;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -8,15 +9,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static io.github.surang_volkov.minecivilization.MineCivilization.instance;
+
 public class GuildManager {
-    public static void GenerateGuild(Player p, String name, int index){
+    public static void CreateGuild(Player p, String name){
+        int index = ChunkManager.getChunkIndex(p.getChunk().getX(),p.getChunk().getZ());
         FileConfiguration guildConfig = DataManager.getGuildsConfig();
-        Map<String , Map<String,Object>> GuildData = new HashMap<>();
-        GuildData.put(name,new GuildProperties.Builder()
+        ConfigurationSection guilds = guildConfig.getConfigurationSection("guilds");
+        Map<String , Map<String,Object>> guildData = new HashMap<>();
+
+        if (guilds != null) {
+            for (String key : guilds.getKeys(false)) {
+                ConfigurationSection section = guilds.getConfigurationSection(key);
+                if (section != null) {
+                    guildData.put(key, section.getValues(false));
+                }
+            }
+        }
+
+        guildData.put(name,new GuildProperties.Builder()
+                .rank("minor")
                 .leader(p.getName())
                 .viceLeader("none")
+                .members(List.of(p.getName()))
+                .claimed(List.of(Integer.toString(index)))
                 .safeZone(List.of(Integer.toString(index)))
                 .build());
+        guildConfig.set("guilds",guildData);
+        DataManager.saveAll();
+        DataManager.reload();
     }
     private static class GuildProperties{
         public String name;
@@ -39,7 +60,7 @@ public class GuildManager {
         public static class Builder {
             private String name;
             private String rank;
-            private String leader = "unclaimed"; // border, safezone, claimed, unclaimed
+            private String leader; // border, safezone, claimed, unclaimed
             private String viceLeader = "none"; // default : none
             private List<String> members;
             private List<String> claimed;
@@ -66,4 +87,5 @@ public class GuildManager {
             }
         }
     }
+
 }

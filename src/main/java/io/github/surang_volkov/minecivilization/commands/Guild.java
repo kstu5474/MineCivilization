@@ -13,8 +13,6 @@ public class Guild implements SubCommand {
 
     @Override
     public void execute(CommandSender commandSender, String[] args) {
-        Player p = (Player) commandSender;
-        int index = ChunkManager.getChunkIndex(p.getChunk().getX(),p.getChunk().getZ());
         if (args.length == 0) {
             commandSender.sendMessage("§e사용법: /mcv guild <invite|leave|kick|status|create|mandate|promote|demote|delete>");
         }
@@ -34,7 +32,8 @@ public class Guild implements SubCommand {
                     return;
                 }
                 if (args.length == 2) {
-                    GuildManager.GenerateGuild(p,args[1],index);
+                    Player p = (Player) commandSender;
+                    GuildManager.CreateGuild(p,args[1]);
                     return;
                 }
                 break;

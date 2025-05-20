@@ -3,17 +3,14 @@ package io.github.surang_volkov.minecivilization.tools;
 import io.github.surang_volkov.minecivilization.MineCivilization;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-import static io.github.surang_volkov.minecivilization.MineCivilization.instance;
 import static io.github.surang_volkov.minecivilization.tools.DataManager.getChunkConfig;
 
 public class ChunkManager {
-    public static void GenerateChunkProperties(Map<String,Integer> coordinate, int limit){
+    public static void generateChunkProperties(Map<String,Integer> coordinate, int limit){
         int number = 1;
         int r = 0;
         FileConfiguration chunkConfig = getChunkConfig();
@@ -55,8 +52,9 @@ public class ChunkManager {
             chunkDataGenerated.put(String.valueOf(number), new ChunkProperties.Builder()
                     .coordinate(new HashMap<>(coord)).boost(getRandomBoost()).product(getRandomProduct()).build());
         }
-        chunkConfig.set("chunks",chunkDataGenerated); // 메모리 저장
-        DataManager.saveAll(instance); // 파일 저장
+        chunkConfig.set("chunks",chunkDataGenerated);
+        DataManager.saveAll();
+        DataManager.reload();
     } // 청크 생성 함수
     private static List<String> getRandomBoost(){
         Random random = new Random();
@@ -227,5 +225,16 @@ public class ChunkManager {
         }//예외처리
     }
     public record ChunkProperty(int level, int x, int z, String status, String claimer, List<String> product, List<String> boost){}
-    //setChunkProperty가 필요
+
+    public static boolean setChunkProperty(int index, String target, Object input){
+        FileConfiguration chunkConfig = DataManager.getChunkConfig();
+        ConfigurationSection chunks = chunkConfig.getConfigurationSection("chunks");
+        ChunkProperty chunk = getChunkProperty(index);
+        if (chunks == null){return false;}
+        chunks.set(index+target,input);
+        chunkConfig.set("chunks",chunks);
+        DataManager.saveAll();
+        DataManager.reload();
+        return true;
+    }
 }

@@ -28,7 +28,7 @@ public class MineCivilization extends JavaPlugin implements Listener {
     }
     @Override
     public void onDisable() {
-        DataManager.saveAll(this);
+        DataManager.saveAll();
         infoLog("플러그인 비활성화");
     }
     //info 로그 남기는 함수
