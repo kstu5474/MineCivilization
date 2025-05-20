@@ -18,8 +18,10 @@ public class Guild implements SubCommand {
         }
         switch (args[0].toLowerCase()){
             case "invite":
+                commandSender.sendMessage("어쩌고저쩌고");
                 break;
             case "leave":
+                commandSender.sendMessage("§e사용법: /mcv guild <invite|leave|kick|status|create|mandate|promote|demote|delete>");
                 break;
             case "kick":
                 break;
