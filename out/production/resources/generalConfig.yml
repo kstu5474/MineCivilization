@@ -1,8 +1,10 @@
+config:
+  language: korean
 chunk-config:
   origin:
-    x: null
-    z: null
-  limit: null
+    x: none
+    z: none
+  limit: none
 
 guild-config:
   max-guild-member: 20
