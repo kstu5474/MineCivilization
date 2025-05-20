@@ -18,7 +18,6 @@ public class Guild implements SubCommand {
         }
         switch (args[0].toLowerCase()){
             case "invite":
-                commandSender.sendMessage("§e사용법: /mcv guild create <(띄어쓰기 없이)길드이름>");
                 break;
             case "leave":
                 break;
