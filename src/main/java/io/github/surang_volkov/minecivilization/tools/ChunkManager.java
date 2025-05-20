@@ -3,7 +3,6 @@ package io.github.surang_volkov.minecivilization.tools;
 import io.github.surang_volkov.minecivilization.MineCivilization;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 

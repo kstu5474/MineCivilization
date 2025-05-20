@@ -19,11 +19,11 @@ public class MoveEvent implements Listener {
         int fromChunkZ = fromChunk.getZ();
         int toChunkX = toChunk.getX();
         int toChunkZ = toChunk.getZ();
-        int toIndex = ChunkManager.getChunkIndex(toChunkX,toChunkZ);
-        ChunkManager.ChunkProperty chunkP = ChunkManager.getChunkProperty(toIndex);
-        String claimer = chunkP.claimer();
         //직전 청크와 다음 청크가 다르다면
         if ( !List.of(fromChunkX, fromChunkZ).equals(List.of(toChunkX, toChunkZ)) ) {
+            int toIndex = ChunkManager.getChunkIndex(toChunkX,toChunkZ);
+            ChunkManager.ChunkProperty chunkP = ChunkManager.getChunkProperty(toIndex);
+            String claimer = chunkP.claimer();
             //인덱스 변화에 메시지 전송
             p.sendMessage("[MineCiv] 이동 이벤트 발생!: to index-"+toIndex+" claimed by "+claimer);
         }

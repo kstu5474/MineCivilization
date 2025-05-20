@@ -40,18 +40,11 @@ public class DataManager {
         return YamlConfiguration.loadConfiguration(file);
     }
     //접근자 (예: 외부에서 가져올 수 있게)
-    public static FileConfiguration getGeneralConfig() {
-        return generalConfig;
-    }
-    public static FileConfiguration getChunkConfig() {
-        return chunkConfig;
-    }
-    public static FileConfiguration getGuildsConfig() {
-        return guildsConfig;
-    }
-    public static FileConfiguration getUserConfig() {
-        return userConfig;
-    }
+    public static FileConfiguration getGeneralConfig() {return generalConfig;}
+    public static FileConfiguration getChunkConfig() {return chunkConfig;}
+    public static FileConfiguration getGuildsConfig() {return guildsConfig;}
+    public static FileConfiguration getUserConfig() {return userConfig;}
+
     //전체 저장 메서드
     public static void saveAll() {
         save(instance, generalConfig, "generalConfig.yml");
