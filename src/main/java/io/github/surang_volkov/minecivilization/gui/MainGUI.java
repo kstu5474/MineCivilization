@@ -1,0 +1,29 @@
+package io.github.surang_volkov.minecivilization.gui;
+
+import io.github.surang_volkov.minecivilization.tools.ItemManager;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+
+public class MainGUI implements Listener {
+    private final Inventory inv;
+
+
+    private void initItemSetting() {
+        inv.setItem(13,ItemManager.guildItem);
+    }
+
+    public MainGUI() {
+        this.inv = Bukkit.createInventory(null,27,"메인 메뉴");
+        initItemSetting();
+    }
+
+    public void open(Player player){
+        player.openInventory(inv);
+    }
+
+}
