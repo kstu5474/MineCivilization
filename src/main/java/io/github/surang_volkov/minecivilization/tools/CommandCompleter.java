@@ -21,7 +21,7 @@ public class CommandCompleter implements TabCompleter {
     private static final FileConfiguration userConfig = DataManager.getUserConfig();
 
 
-    private final List<String> sub1 = Arrays.asList("reload","chunk","guild","rules","test");
+    private final List<String> sub1 = Arrays.asList("reload","chunk","guild","rules","test","gui");
     private final List<String> subChunk = Arrays.asList("edit","setorigin");
     private final List<String> subChunkEditIndex = Arrays.asList("claimer","level","boost","products");
     private final List<String> subGuild = Arrays.asList("claim","disclaim","invite", "join", "leave", "promote", "demote", "mandate");
