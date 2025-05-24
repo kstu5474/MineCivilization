@@ -1,5 +1,7 @@
 package io.github.surang_volkov.minecivilization;
 
+import io.github.surang_volkov.minecivilization.events.GUI.GuildGUIEvent;
+import io.github.surang_volkov.minecivilization.events.GUI.GuildOwnerEvent;
 import io.github.surang_volkov.minecivilization.events.MoveEvent;
 import io.github.surang_volkov.minecivilization.events.GUI.MainGUIEvent;
 import io.github.surang_volkov.minecivilization.tools.CommandCompleter;
@@ -24,6 +26,8 @@ public class MineCivilization extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new JoinEvent(), this);
         getServer().getPluginManager().registerEvents(new MoveEvent(), this);
         getServer().getPluginManager().registerEvents(new MainGUIEvent(), this);
+        getServer().getPluginManager().registerEvents(new GuildGUIEvent(), this);
+        getServer().getPluginManager().registerEvents(new GuildOwnerEvent(), this);
         Objects.requireNonNull(getCommand("mcv")).setExecutor(new McvCommand());
         Objects.requireNonNull(getCommand("mcv")).setTabCompleter(new CommandCompleter());
         infoLog("플러그인 로드 완료");

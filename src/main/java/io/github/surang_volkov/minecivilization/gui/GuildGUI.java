@@ -14,7 +14,10 @@ public class GuildGUI implements Listener {
 
 
     private void initItemSetting() {
-        Guildinv.setItem(1,ItemManager.guildItem01);
+        Guildinv.setItem(2,ItemManager.guildItem02);
+        Guildinv.setItem(5,ItemManager.guildItem04);
+        Guildinv.setItem(7,ItemManager.guildItem03);
+        Guildinv.setItem(9,ItemManager.guildItem01);
     }
 
     public GuildGUI() {

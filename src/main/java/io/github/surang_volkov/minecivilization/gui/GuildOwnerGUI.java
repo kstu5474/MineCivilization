@@ -14,12 +14,16 @@ public class GuildOwnerGUI implements Listener {
 
 
     private void initItemSetting() {
-        GuildOwnerinv.setItem(1,ItemManager.guildItem01);
+        GuildOwnerinv.setItem(1,ItemManager.guildOwnerItem01);
+        GuildOwnerinv.setItem(3,ItemManager.guildOwnerItem02);
+        GuildOwnerinv.setItem(5,ItemManager.guildOwnerItem03);
+        GuildOwnerinv.setItem(7,ItemManager.guildOwnerItem04);
     }
 
     public GuildOwnerGUI() {
         this.GuildOwnerinv = Bukkit.createInventory(null,9,"길드장 메뉴");
         initItemSetting();
+
     }
 
     public void open(Player player){

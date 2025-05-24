@@ -1,7 +1,5 @@
 package io.github.surang_volkov.minecivilization.events.GUI;
 
-import io.github.surang_volkov.minecivilization.gui.GuildGUI;
-import io.github.surang_volkov.minecivilization.gui.GuildOwnerGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
@@ -11,35 +9,36 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.Objects;
 
-public class GuildGUIEvent implements Listener {
+public class GuildOwnerEvent implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
         if (e.getClickedInventory() == null)
             return;
-        if (ChatColor.stripColor(e.getView().getTitle()).equalsIgnoreCase("길드 메뉴")) {
+        if (ChatColor.stripColor(e.getView().getTitle()).equalsIgnoreCase("길드장 메뉴")) {
             e.setCancelled(true);
             if (Objects.requireNonNull(e.getCurrentItem()).getType() == Material.AIR && e.getCurrentItem() != null){
-            }
-            else if (e.getCurrentItem().getItemMeta().getCustomModelData() == 1235) {
-                Player player = (Player) e.getWhoClicked();
-                GuildOwnerGUI GuildOwnerinv = new GuildOwnerGUI();
-                GuildOwnerinv.open(player);
+
             }
 
-            else if (e.getCurrentItem().getItemMeta().getCustomModelData() == 1236) {
+            else if (e.getCurrentItem().getItemMeta().getCustomModelData() == 1345) {
                 Player player = (Player) e.getWhoClicked();
-                // 길드 생성
+                // 길드장 위임
             }
 
-            else if (e.getCurrentItem().getItemMeta().getCustomModelData() == 1237) {
+            else if (e.getCurrentItem().getItemMeta().getCustomModelData() == 1346) {
                 Player player = (Player) e.getWhoClicked();
-                //길드 탈퇴
+                // 부길드장 임명
             }
 
-            else if (e.getCurrentItem().getItemMeta().getCustomModelData() == 1238) {
+            else if (e.getCurrentItem().getItemMeta().getCustomModelData() == 1347) {
                 Player player = (Player) e.getWhoClicked();
-                //길드 가입
+                // 부길드장 해임
+            }
+
+            else if (e.getCurrentItem().getItemMeta().getCustomModelData() == 1348) {
+                Player player = (Player) e.getWhoClicked();
+                // 길드 해산
             }
         }
 
