@@ -1,6 +1,6 @@
 package io.github.surang_volkov.minecivilization.events.GUI;
 
-import io.github.surang_volkov.minecivilization.gui.GuildGUI;
+
 import io.github.surang_volkov.minecivilization.gui.GuildOwnerGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,6 +25,7 @@ public class GuildGUIEvent implements Listener {
                 Player player = (Player) e.getWhoClicked();
                 GuildOwnerGUI GuildOwnerinv = new GuildOwnerGUI();
                 GuildOwnerinv.open(player);
+                // if문으로 길드장 구별 넣어야 함
             }
 
             else if (e.getCurrentItem().getItemMeta().getCustomModelData() == 1236) {

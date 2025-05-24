@@ -1,6 +1,7 @@
 package io.github.surang_volkov.minecivilization.events.GUI;
 
 import io.github.surang_volkov.minecivilization.gui.GuildGUI;
+import io.github.surang_volkov.minecivilization.gui.GuildOwnerGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;

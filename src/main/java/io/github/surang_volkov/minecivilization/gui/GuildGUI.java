@@ -14,15 +14,16 @@ public class GuildGUI implements Listener {
 
 
     private void initItemSetting() {
-        Guildinv.setItem(2,ItemManager.guildItem02);
-        Guildinv.setItem(5,ItemManager.guildItem04);
-        Guildinv.setItem(7,ItemManager.guildItem03);
-        Guildinv.setItem(9,ItemManager.guildItem01);
+        Guildinv.setItem(1,ItemManager.guildItem02);
+        Guildinv.setItem(3,ItemManager.guildItem04);
+        Guildinv.setItem(5,ItemManager.guildItem03);
+        Guildinv.setItem(7,ItemManager.guildItem01);
     }
 
     public GuildGUI() {
         this.Guildinv = Bukkit.createInventory(null,9,"길드 메뉴");
         initItemSetting();
+
     }
 
     public void open(Player player){
