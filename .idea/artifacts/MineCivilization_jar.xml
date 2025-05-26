@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="MineCivilization:jar">
-    <output-path>$PROJECT_DIR$/../../servers/plugin tester/plugins</output-path>
+    <output-path>$PROJECT_DIR$/../../teston/plugin tester/plugins</output-path>
     <root id="archive" name="MineCivilization.jar">
       <element id="module-output" name="minecivilization.main" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/2.1.20-RC2/9df26aff07f135d0e1f49c7a6ce82e059f90459e/kotlin-stdlib-jdk8-2.1.20-RC2.jar" path-in-jar="/" />

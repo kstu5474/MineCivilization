@@ -1,9 +1,12 @@
 package io.github.surang_volkov.minecivilization.tools;
 
 import io.github.surang_volkov.minecivilization.commands.*;
+import io.github.surang_volkov.minecivilization.commands.gui;
+import io.github.surang_volkov.minecivilization.gui.MainGUI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,12 +22,18 @@ public class McvCommand implements CommandExecutor {
         subCommands.put("chunk",new Chunk());
         subCommands.put("guild",new Guild());
         subCommands.put("test",new Test());
+        subCommands.put("gui",new gui());
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
         if (args.length == 0) {
-            commandSender.sendMessage("§e사용법: /mcv <reload|chunk|guild|test|rules>");
+            commandSender.sendMessage("GUI를 열었습니다.");
+
+            Player player = (Player) commandSender;
+            MainGUI inv = new MainGUI();
+            inv.open(player);
+
             return true;
         }
         SubCommand sub = subCommands.get(args[0].toLowerCase());
