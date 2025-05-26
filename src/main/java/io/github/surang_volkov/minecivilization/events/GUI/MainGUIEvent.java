@@ -26,6 +26,9 @@ public class MainGUIEvent implements Listener {
                 GuildGUI Guildinv = new GuildGUI();
                 Guildinv.open(player);
             }
+            else if (e.getCurrentItem().getItemMeta().getCustomModelData() == 1123){
+                
+            }
         }
     }
 }

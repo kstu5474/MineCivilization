@@ -61,6 +61,9 @@ public class ItemManager {
     public static ItemStack guildItem04 = buildItem(Material.CYAN_BANNER,1,1,"§b길드 가입",1238,
             Component.text("길드에 가입합니다. 길드장이 수락하여야 합니다.").color(NamedTextColor.YELLOW));
 
+    public static ItemStack TestPlayerhead = buildItem(Material.PLAYER_HEAD,1,1,"§b플레이어 리스트",1123,
+            Component.text("T E S  T                      임").color(NamedTextColor.YELLOW));
+
 
 
 

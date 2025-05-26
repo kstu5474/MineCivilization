@@ -13,6 +13,7 @@ public class MainGUI implements Listener {
 
     private void initItemSetting() {
         inv.setItem(13,ItemManager.guildItem);
+        inv.setItem(1,ItemManager.TestPlayerhead);
     }
 
     public MainGUI() {
