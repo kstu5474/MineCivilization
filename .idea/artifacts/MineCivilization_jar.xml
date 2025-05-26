@@ -1,16 +1,16 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="MineCivilization:jar">
-    <output-path>$PROJECT_DIR$/../../teston/plugin tester/plugins</output-path>
-    <root id="archive" name="MineCivilization.jar">
+    <output-path>$PROJECT_DIR$/../../servers/plugin tester/plugins</output-path>
+    <root id="archive" name="minecivilization.main.jar">
       <element id="module-output" name="minecivilization.main" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/2.1.20-RC2/9df26aff07f135d0e1f49c7a6ce82e059f90459e/kotlin-stdlib-jdk8-2.1.20-RC2.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/2.1.20-RC2/85b33025e95ec3950adfb8398b579d8a5dd5c606/kotlin-stdlib-jdk7-2.1.20-RC2.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.1.20-RC2/758f47ed0eac62ae0f5a1ad625aeff65a6ccb994/kotlin-stdlib-2.1.20-RC2.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" path-in-jar="/" />
-      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/plugin.yml" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.1.20-RC2/758f47ed0eac62ae0f5a1ad625aeff65a6ccb994/kotlin-stdlib-2.1.20-RC2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/2.1.20-RC2/85b33025e95ec3950adfb8398b579d8a5dd5c606/kotlin-stdlib-jdk7-2.1.20-RC2.jar" path-in-jar="/" />
       <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/chunkData.yml" />
       <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/generalConfig.yml" />
       <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/guildsData.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/plugin.yml" />
       <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/userData.yml" />
     </root>
   </artifact>
