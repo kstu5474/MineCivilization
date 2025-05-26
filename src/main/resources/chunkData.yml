@@ -1,1 +1,12 @@
-chunks: none
+chunks:
+  '0': #더미 청크. 인덱스 중에 존재하지 않음. 청크를 생성했을때 사라짐
+    level: 0
+    status: claimed
+    claimer: dummy
+    coordinate:
+      x: empty
+      z: empty
+    product:
+      - dummy
+    boost:
+      - dummy

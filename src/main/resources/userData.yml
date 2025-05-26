@@ -1,5 +1,9 @@
 users:
-  surang_volkov:
-    guild: houseofwolves
-  gammot:
-    guild: houseofwolves
+  dummy:
+    uuid: dummy
+    guild: dummy
+    status: leader
+  none:
+    uuid: none
+    guild: dummy
+    status: vice-leader #멤버는 member, 길드가 없는 독립유저는 independent

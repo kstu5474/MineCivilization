@@ -1,7 +1,6 @@
 package io.github.surang_volkov.minecivilization.tools;
 
 import io.github.surang_volkov.minecivilization.commands.*;
-import io.github.surang_volkov.minecivilization.commands.gui;
 import io.github.surang_volkov.minecivilization.gui.MainGUI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,7 +21,6 @@ public class McvCommand implements CommandExecutor {
         subCommands.put("chunk",new Chunk());
         subCommands.put("guild",new Guild());
         subCommands.put("test",new Test());
-        subCommands.put("gui",new gui());
     }
 
     @Override

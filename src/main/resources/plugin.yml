@@ -12,12 +12,6 @@ permissions:
   minecivilization.user:
     description: 유저 기본 권한
     default: true
-  minecivilization.vice:
-    description: 부마스터 권한
-    default: false
-  minecivilization.master:
-    description: 마스터 권한
-    default: false
   minecivilization.manager:
     description: 매니저 권한
     default: false

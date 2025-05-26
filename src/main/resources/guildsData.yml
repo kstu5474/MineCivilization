@@ -1,1 +1,12 @@
-guilds: none
+guilds:
+  dummy:
+    rank: dummy
+    leader: dummy
+    vice-leader: none
+    members:
+      - dummy
+      - none
+    claimed:
+      - 0
+    safe-zone:
+      - 0
