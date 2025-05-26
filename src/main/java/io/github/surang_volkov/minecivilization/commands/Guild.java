@@ -1,13 +1,9 @@
 package io.github.surang_volkov.minecivilization.commands;
 
-import io.github.surang_volkov.minecivilization.tools.ChunkManager;
 import io.github.surang_volkov.minecivilization.tools.GuildManager;
 import io.github.surang_volkov.minecivilization.tools.SubCommand;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import static io.github.surang_volkov.minecivilization.MineCivilization.infoLog;
 
 public class Guild implements SubCommand {
 
@@ -18,12 +14,16 @@ public class Guild implements SubCommand {
         }
         switch (args[0].toLowerCase()){
             case "invite":
+                commandSender.sendMessage("§e사용법: /mcv guild invite <username>");
                 break;
             case "leave":
+                commandSender.sendMessage("§e사용법: /mcv guild leave");
                 break;
             case "kick":
+                commandSender.sendMessage("§e사용법: /mcv guild kick <username>");
                 break;
             case "status":
+                commandSender.sendMessage("§e사용법: /mcv guild status");
                 break;
 
             case "create":
@@ -33,7 +33,9 @@ public class Guild implements SubCommand {
                 }
                 if (args.length == 2) {
                     Player p = (Player) commandSender;
-                    GuildManager.CreateGuild(p,args[1]);
+                    if (!GuildManager.CreateGuild(p, args[1])) {
+                        commandSender.sendMessage("§e길드를 생성하는데 실패했습니다.");
+                    }
                     return;
                 }
                 break;

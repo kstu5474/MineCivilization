@@ -9,7 +9,7 @@ import java.util.*;
 import static io.github.surang_volkov.minecivilization.tools.DataManager.getChunkConfig;
 
 public class ChunkManager {
-    public static void generateChunkProperties(Map<String,Integer> coordinate, int limit){
+    public static void createChunkProperties(Map<String,Integer> coordinate, int limit){
         int number = 1;
         int r = 0;
         FileConfiguration chunkConfig = getChunkConfig();
@@ -52,7 +52,6 @@ public class ChunkManager {
                     .coordinate(new HashMap<>(coord)).boost(getRandomBoost()).product(getRandomProduct()).build());
         }
         chunkConfig.set("chunks",chunkDataGenerated);
-        DataManager.saveAll();
         DataManager.reload();
     } // 청크 생성 함수
     private static List<String> getRandomBoost(){
@@ -174,13 +173,14 @@ public class ChunkManager {
         }
         MineCivilization.infoLog("현재 위치한 청크를 찾을 수 없습니다.");
         return 0;
-    }
-    public static ChunkCoordinate getChunkCoordinate(int index){
+    } //좌표에서 인덱스를 반환하는 메서드. 경계선 바깥의 정의되지 않은 청크는 항상 index = 0이 반환됨.
+
+    public static Optional<ChunkCoordinate> getChunkCoordinate(int index){
         FileConfiguration chunkConfig = DataManager.getChunkConfig();
         ConfigurationSection chunks = chunkConfig.getConfigurationSection("chunks");
         if (chunks == null) {
             MineCivilization.infoLog("청크 데이터가 없습니다.");
-            return new ChunkCoordinate(0, 0);
+            return Optional.empty();
         }
         for (String key : chunks.getKeys(false)) {
             ConfigurationSection chunk = chunks.getConfigurationSection(key);
@@ -189,51 +189,64 @@ public class ChunkManager {
             int chunkZ = chunk.getInt("coordinate.z");
 
             if (key.equals(Integer.toString(index))) {
-                return new ChunkCoordinate(chunkX, chunkZ);
+                return Optional.of(new ChunkCoordinate(chunkX, chunkZ));
             }
         }
         MineCivilization.infoLog("현재 위치한 청크를 찾을 수 없습니다.");
-        return new ChunkCoordinate(0, 0);
-    }
+        return Optional.empty();
+    } // 인덱스에서 좌표를 반환하는 메서드. 0이나 존재하지 않는 index를 입력하면 empty()가 반환됨. 사용처에서 .isEmpty()로 확인할 수 있음
     public record ChunkCoordinate(int x, int z) {}
-    public static ChunkProperty getChunkProperty(int index){
+
+    public static Optional<ChunkProperty> getChunkProperty(int index){
         FileConfiguration chunkConfig = DataManager.getChunkConfig();
         ConfigurationSection chunks = chunkConfig.getConfigurationSection("chunks");
-
         if (chunks == null) {
             MineCivilization.infoLog("청크 데이터가 없습니다.");
-            return new ChunkProperty(0, 0, 0, "unclaimed", "none", List.of(""), List.of(""));
-        }//예외처리
+            return Optional.empty(); // ❗ 데이터 자체가 없는 경우
+        }
         for (String key : chunks.getKeys(false)) {
-            ConfigurationSection chunk = chunks.getConfigurationSection(key);
-            if (chunk == null) continue;
-            int level = chunk.getInt("level");
-            int chunkX = chunk.getInt("coordinate.x");
-            int chunkZ = chunk.getInt("coordinate.z");
-            String status = chunk.getString("status", "none");
-            String claimer = chunk.getString("claimer", "none");
-            List<String> product = chunk.getStringList("product");
-            List<String> boost = chunk.getStringList("boost");
             if (key.equals(Integer.toString(index))) {
-                return new ChunkProperty(level, chunkX, chunkZ, status, claimer, product, boost);
+                ConfigurationSection chunk = chunks.getConfigurationSection(key);
+                if (chunk == null) continue;
+                int level = chunk.getInt("level");
+                int chunkX = chunk.getInt("coordinate.x");
+                int chunkZ = chunk.getInt("coordinate.z");
+                String status = chunk.getString("status", "none");
+                String claimer = chunk.getString("claimer", "none");
+                List<String> product = chunk.getStringList("product");
+                List<String> boost = chunk.getStringList("boost");
+                return Optional.of(new ChunkProperty(level, chunkX, chunkZ, status, claimer, product, boost));
             }
         }
-        {
-            MineCivilization.infoLog("현재 위치한 청크를 찾을 수 없습니다.");
-            return new ChunkProperty(0, 0, 0, "unclaimed", "none", List.of(""), List.of(""));
-        }//예외처리
-    }
+        MineCivilization.infoLog("현재 위치한 청크를 찾을 수 없습니다.");
+        return Optional.empty(); // ❗ 청크를 찾을 수 없는 경우
+    } // 인덱스의 내용을 반환하는 메서드. 0이나 존재하지 않는 index를 입력하면 empty()가 반환됨. 사용처에서 .isEmpty()로 확인할 수 있음
     public record ChunkProperty(int level, int x, int z, String status, String claimer, List<String> product, List<String> boost){}
 
     public static boolean setChunkProperty(int index, String target, Object input){
         FileConfiguration chunkConfig = DataManager.getChunkConfig();
         ConfigurationSection chunks = chunkConfig.getConfigurationSection("chunks");
-        ChunkProperty chunk = getChunkProperty(index);
-        if (chunks == null){return false;}
-        chunks.set(index+target,input);
-        chunkConfig.set("chunks",chunks);
-        DataManager.saveAll();
+        if(chunks == null) return false;
+        chunks.set(index+"."+target,input);//로직 미완성
         DataManager.reload();
         return true;
-    }
+    }//성공하면 true 반환. 파일 저장,리로드 까지 진행 (되도록 이 함수를 직접 쓰지 말것)
+
+    public static boolean isTerritoryNearbyGuild(String guildName,int index){
+        if (getChunkProperty(index).isEmpty()) {MineCivilization.infoLog(""); return false;}
+        Optional<ChunkCoordinate> coord = getChunkCoordinate(index);
+        if(coord.isEmpty()) return false;
+        int x = coord.get().x();
+        int z = coord.get().z();
+        boolean canClaim = false;
+        Optional<ChunkProperty> posX = getChunkProperty(getChunkIndex(x+1,z));
+        Optional<ChunkProperty> negX = getChunkProperty(getChunkIndex(x-1,z));
+        Optional<ChunkProperty> posZ = getChunkProperty(getChunkIndex(x,z+1));
+        Optional<ChunkProperty> negZ = getChunkProperty(getChunkIndex(x,z-1));
+        if(posX.isPresent() && Objects.equals(posX.get().claimer(),guildName)) canClaim = true;
+        if(negX.isPresent() && Objects.equals(negX.get().claimer(),guildName)) canClaim = true;
+        if(posZ.isPresent() && Objects.equals(posZ.get().claimer(),guildName)) canClaim = true;
+        if(negZ.isPresent() && Objects.equals(negZ.get().claimer(),guildName)) canClaim = true;
+        return canClaim;
+    }//단순 계산 메서드. 인접 청크가 해당길 드의 영토인지 확인
 }

@@ -12,53 +12,57 @@ import static io.github.surang_volkov.minecivilization.MineCivilization.infoLog;
 import static io.github.surang_volkov.minecivilization.MineCivilization.instance;
 
 public class DataManager {
-
     private static FileConfiguration generalConfig;
     private static FileConfiguration chunkConfig;
     private static FileConfiguration guildsConfig;
     private static FileConfiguration userConfig;
-
-    public static void init(JavaPlugin plugin){
+    public static void init(JavaPlugin plugin) {
         generalConfig = load(plugin, "generalConfig.yml");
         chunkConfig = load(plugin, "chunkData.yml");
         guildsConfig = load(plugin, "guildsData.yml");
         userConfig = load(plugin, "userData.yml");
-    }
-    public static void reload() {
-        generalConfig = load(instance, "generalConfig.yml");
-        chunkConfig = load(instance, "chunkData.yml");
-        guildsConfig = load(instance, "guildsData.yml");
-        userConfig = load(instance, "userData.yml");
-
-        infoLog("설정 파일들이 성공적으로 리로드되었습니다.");
-    }
+    } //시작할때 로드하는 역할. 처음 한번만 호출
+    public static boolean reload() {
+        if (save()){
+            generalConfig = load(instance, "generalConfig.yml");
+            chunkConfig = load(instance, "chunkData.yml");
+            guildsConfig = load(instance, "guildsData.yml");
+            userConfig = load(instance, "userData.yml");
+            infoLog("설정파일들이 성공적으로 저장 및 리로드 되었습니다.");
+            return true;
+        } else {
+            infoLog("설정 파일 저장에 실패했습니다.");
+            return false;
+        }
+    } //저장 및 리로드. 실패하면 false 반환
     private static FileConfiguration load(JavaPlugin plugin, String fileName) {
         File file = new File(plugin.getDataFolder(), fileName);
         if (!file.exists()) {
             plugin.saveResource(fileName, false);
         }
         return YamlConfiguration.loadConfiguration(file);
-    }
-    //접근자 (예: 외부에서 가져올 수 있게)
+    } // 로드할때 사용. 개별적으로는 사용 안함.
+    //각 파일마다 config 가져올 때 사용.
     public static FileConfiguration getGeneralConfig() {return generalConfig;}
     public static FileConfiguration getChunkConfig() {return chunkConfig;}
     public static FileConfiguration getGuildsConfig() {return guildsConfig;}
     public static FileConfiguration getUserConfig() {return userConfig;}
-
-    //전체 저장 메서드
-    public static void saveAll() {
-        save(instance, generalConfig, "generalConfig.yml");
-        save(instance, chunkConfig, "chunkData.yml");
-        save(instance, guildsConfig, "guildsData.yml");
-        save(instance, userConfig, "userData.yml");
-    }
-    private static void save(JavaPlugin plugin, FileConfiguration config, String fileName) {
+    public static boolean save() {
+        if (saveOne(instance, generalConfig, "generalConfig.yml")&&
+                saveOne(instance, chunkConfig, "chunkData.yml")&&
+                saveOne(instance, guildsConfig, "guildsData.yml")&&
+                saveOne(instance, userConfig, "userData.yml")){
+            return true;
+        }else return false;
+    } //전체 저장 메서드
+    private static boolean saveOne(JavaPlugin plugin, FileConfiguration config, String fileName) {
         try {
             config.save(new File(plugin.getDataFolder(), fileName));
-            infoLog(fileName+" 파일 저장 완료");
+            return true;
         } catch (IOException e) {
             errorLog(fileName+" 파일 저장을 실패했습니다.");
             errorLog(e.getMessage());
+            return false;
         }
-    }
+    } // 개별 저장 메서드. 개별적으로는 사용 안함.
 }

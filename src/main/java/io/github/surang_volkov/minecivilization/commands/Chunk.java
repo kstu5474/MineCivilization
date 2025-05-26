@@ -40,7 +40,7 @@ public class Chunk implements SubCommand {
                                 generalConfig.set("chunk-config.origin.x",p.getChunk().getX());
                                 generalConfig.set("chunk-config.origin.z",p.getChunk().getZ());
                                 generalConfig.set("chunk-config.limit",limit);
-                                ChunkManager.generateChunkProperties(Map.of("x", p.getChunk().getX(),"z", p.getChunk().getZ()), limit);
+                                ChunkManager.createChunkProperties(Map.of("x", p.getChunk().getX(),"z", p.getChunk().getZ()), limit);
                                 infoLog("청크 속성을 성공적으로 생성했습니다.");
                                 commandSender.sendMessage("청크 속성을 성공적으로 생성했습니다.");
                             }

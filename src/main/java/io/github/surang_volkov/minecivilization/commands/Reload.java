@@ -8,8 +8,7 @@ public class Reload implements SubCommand {
 
     @Override
     public void execute(CommandSender commandSender, String[] args) {
-        DataManager.saveAll();
         DataManager.reload();
-        commandSender.sendMessage("설정 파일이 성공적으로 리로드되었습니다.");
+        commandSender.sendMessage("설정 파일이 성공적으로 저장 및 리로드되었습니다.");
     }
 }

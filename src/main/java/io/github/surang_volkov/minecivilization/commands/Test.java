@@ -24,17 +24,17 @@ public class Test implements SubCommand {
     private String getShit(Player p){
         int playerX = p.getChunk().getX();
         int playerZ = p.getChunk().getZ();
-
         int key = ChunkManager.getChunkIndex(playerX,playerZ);
-        ChunkManager.ChunkCoordinate coord = ChunkManager.getChunkCoordinate(key);
-        ChunkManager.ChunkProperty chunkP = ChunkManager.getChunkProperty(key);
-        String claimer = chunkP.claimer();
-        return "index-" + key + ", coordinate-(" + coord.x() + ", " + coord.z() + "), claimedby-" + claimer;
+        Optional<ChunkManager.ChunkCoordinate> coord = ChunkManager.getChunkCoordinate(key);
+        Optional<ChunkManager.ChunkProperty> chunkP = ChunkManager.getChunkProperty(key);
+        if (coord.isEmpty() || chunkP.isEmpty()) return "알수없음";
+        String claimer = chunkP.get().claimer();
+        return "index-" + key + ", coordinate-(" + coord.get().x() + ", " + coord.get().z() + "), claimedby-" + claimer;
     }
-    //시간 확인 함수
+
     public String getTime(){
         Date now = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return format.format(now);
-    }
+    }//시간확인함수
 }
