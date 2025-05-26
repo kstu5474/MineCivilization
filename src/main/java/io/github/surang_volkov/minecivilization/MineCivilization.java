@@ -1,5 +1,6 @@
 package io.github.surang_volkov.minecivilization;
 
+import io.github.surang_volkov.minecivilization.events.ChatEvent;
 import io.github.surang_volkov.minecivilization.events.GUI.GuildGUIEvent;
 import io.github.surang_volkov.minecivilization.events.GUI.GuildOwnerEvent;
 import io.github.surang_volkov.minecivilization.events.MoveEvent;
@@ -25,6 +26,7 @@ public class MineCivilization extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new BreakEvent(), this);
         getServer().getPluginManager().registerEvents(new JoinEvent(), this);
         getServer().getPluginManager().registerEvents(new MoveEvent(), this);
+        getServer().getPluginManager().registerEvents(new ChatEvent(), this);
         getServer().getPluginManager().registerEvents(new MainGUIEvent(), this);
         getServer().getPluginManager().registerEvents(new GuildGUIEvent(), this);
         getServer().getPluginManager().registerEvents(new GuildOwnerEvent(), this);

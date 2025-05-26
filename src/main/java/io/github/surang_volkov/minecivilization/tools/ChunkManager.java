@@ -52,6 +52,7 @@ public class ChunkManager {
                     .coordinate(new HashMap<>(coord)).boost(getRandomBoost()).product(getRandomProduct()).build());
         }
         chunkConfig.set("chunks",chunkDataGenerated);
+        DataManager.save();
         DataManager.reload();
     } // 청크 생성 함수
     private static List<String> getRandomBoost(){
@@ -228,7 +229,7 @@ public class ChunkManager {
         ConfigurationSection chunks = chunkConfig.getConfigurationSection("chunks");
         if(chunks == null) return false;
         chunks.set(index+"."+target,input);//로직 미완성
-        DataManager.reload();
+        DataManager.save();
         return true;
     }//성공하면 true 반환. 파일 저장,리로드 까지 진행 (되도록 이 함수를 직접 쓰지 말것)
 

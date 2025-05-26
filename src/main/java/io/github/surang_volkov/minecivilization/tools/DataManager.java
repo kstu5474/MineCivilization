@@ -23,17 +23,11 @@ public class DataManager {
         userConfig = load(plugin, "userData.yml");
     } //시작할때 로드하는 역할. 처음 한번만 호출
     public static boolean reload() {
-        if (save()){
-            generalConfig = load(instance, "generalConfig.yml");
-            chunkConfig = load(instance, "chunkData.yml");
-            guildsConfig = load(instance, "guildsData.yml");
-            userConfig = load(instance, "userData.yml");
-            infoLog("설정파일들이 성공적으로 저장 및 리로드 되었습니다.");
-            return true;
-        } else {
-            infoLog("설정 파일 저장에 실패했습니다.");
-            return false;
-        }
+        generalConfig = load(instance, "generalConfig.yml");
+        chunkConfig = load(instance, "chunkData.yml");
+        guildsConfig = load(instance, "guildsData.yml");
+        userConfig = load(instance, "userData.yml");
+        return true;
     } //저장 및 리로드. 실패하면 false 반환
     private static FileConfiguration load(JavaPlugin plugin, String fileName) {
         File file = new File(plugin.getDataFolder(), fileName);

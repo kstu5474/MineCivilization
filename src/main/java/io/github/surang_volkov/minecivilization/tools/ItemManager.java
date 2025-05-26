@@ -1,10 +1,13 @@
 package io.github.surang_volkov.minecivilization.tools;
 
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import net.kyori.adventure.text.Component;
+import org.bukkit.inventory.meta.SkullMeta;
+
 import java.util.List;
 
 public class ItemManager {
@@ -25,6 +28,17 @@ public class ItemManager {
     }
     public static ItemStack buildItem(Material type, int amount, int maxStackSize, String displayName, Component... lore) {
         return buildItem(type, amount, maxStackSize, displayName, 0, lore);
+    }
+
+    public static ItemStack getPlayerHead(String playerName) {
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
+        SkullMeta meta = (SkullMeta) head.getItemMeta();
+        if (meta != null) {
+            meta.setOwningPlayer(Bukkit.getOfflinePlayer(playerName));
+            meta.displayName(Component.text(playerName).color(NamedTextColor.BLUE));
+            head.setItemMeta(meta);
+        }
+        return head;
     }
 
     public static final ItemStack testItem = buildItem(Material.BUCKET, 1, 64, "Test Bucket",
