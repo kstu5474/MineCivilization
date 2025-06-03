@@ -23,7 +23,7 @@ public class MoveEvent implements Listener {
         //직전 청크와 다음 청크가 다르다면
         if ( !List.of(fromChunkX, fromChunkZ).equals(List.of(toChunkX, toChunkZ)) ) {
             int toIndex = ChunkManager.getChunkIndex(toChunkX,toChunkZ);
-            Optional<ChunkManager.ChunkProperty> chunkP = ChunkManager.getChunkProperty(toIndex);
+            Optional<ChunkManager.ChunkProperty> chunkP = ChunkManager.getChunkProperties(toIndex);
             if(chunkP.isEmpty()){
                 p.sendMessage("[MineCiv] 이동 이벤트 발생, 사용할 수 없는 청크입니다.");
             }

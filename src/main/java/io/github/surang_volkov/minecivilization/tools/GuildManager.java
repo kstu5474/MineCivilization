@@ -29,8 +29,7 @@ public class GuildManager {
         boolean c = ChunkManager.setChunkProperty(index,"claimer",guildName);
         boolean d = ChunkManager.setChunkProperty(index,"status","claimed");
         if(a&&b&&c&&d){
-            DataManager.save();
-            return DataManager.reload();
+            return DataManager.save();
         } else return false;
     }//길드 만들땐 서있는 위치에 처음 영토가 생김. 어떤식으로든 생성에 실패하면 false 반환
     private static class GuildProperties{
@@ -86,14 +85,14 @@ public class GuildManager {
         if(Objects.equals(senderUUID,targetUUID)){
             Optional<GuildProperty> guildProp = getGuildProperties(guildName);
             if(guildProp.isEmpty()) return false;
-            for(String key : guildProp.get().claimed){
-                int index = Integer.parseInt(key);
+            for(String claimed : guildProp.get().claimed){
+                int index = Integer.parseInt(claimed);
                 removeGuildTerritory(guildName, index);
             }
-            boolean a = UserManager.setUserProperty(p.getName(),"guild","none");
-            boolean b = UserManager.setUserProperty(p.getName(),"status","independent");
-            boolean c = removeGuildMethod("guilds."+guildName);
-            if(a&&b&&c) {
+            for(String user : guildProp.get().members){
+                removeGuildMember(guildName,user);
+            }
+            if(removeGuildMethod("guilds."+guildName)) {
                 MineCivilization.infoLog("길드가 삭제되었습니다.");
                 return DataManager.save(); // 모든 작업 후 실행
             }
@@ -107,7 +106,6 @@ public class GuildManager {
         return true;
     }
     // 중요: 길드를 완전히 삭제해버리니까 길마만 삭제할 수 있도록 입력하는 유저 확인을 제대로 할 것.
-    // 제대로 완성 못했다 멤버 삭제를 못함 아직
 
     public static boolean isGuild(String guildName){
         FileConfiguration guildConfig = DataManager.getGuildsConfig();
@@ -152,29 +150,40 @@ public class GuildManager {
     }//성공하면 true 반환. 파일 저장,리로드 까지 진행 (되도록 이 함수를 직접 쓰지 말것)
 
     public static boolean addGuildMember(String guildName,String newComer){
-        if(getGuildProperties(guildName).isEmpty())return false;
-        List<String> memberList = new ArrayList<>(getGuildProperties(guildName).get().members);
-        if (memberList.contains(newComer)){
-            return false;
-        }else{
+        if(!UserManager.isUser(newComer)) return false;
+        Optional<GuildProperty> guildProp = getGuildProperties(guildName);
+        if(guildProp.isEmpty()) return false;
+        List<String> memberList = new ArrayList<>(guildProp.get().members());
+        Optional<UserManager.UserProperty> userProp = UserManager.getUserProperties(newComer);
+        if(userProp.isEmpty()) return false;
+        String userStatus = userProp.get().status();
+        if(memberList.contains(newComer)) return false;
+        if(Objects.equals(userStatus,"independent")){
             memberList.add(newComer);
-            return setGuildProperty(guildName, "members", memberList);
+            setGuildProperty(guildName, "members", memberList);
+            return DataManager.save();
         }
-    }//길드멤버 추가. 길드에 이미 유저가 있다면 false 반환. 서버에 존재하는 유저인지 추가 확인 필요
+        return false;
+    }//길드멤버 추가. 길드에 이미 유저가 있다면 false 반환, 실패해도 false 반환
 
     public static boolean removeGuildMember(String guildName,String member){
         if(getGuildProperties(guildName).isEmpty())return false;
-        List<String> memberList = new ArrayList<>(getGuildProperties(guildName).get().members);
-        if (!memberList.contains(member)){
-            return false;
-        }else{
+        List<String> memberList = new ArrayList<>(getGuildProperties(guildName).get().members());
+        Optional<String> targetGuild = UserManager.isMember(member);
+        if(targetGuild.isEmpty()) return false;
+        if(targetGuild.get().equals("none")) return false;
+        if(targetGuild.get().equals(guildName)){
             memberList.remove(member);
-            return setGuildProperty(guildName,"members", memberList);
+            boolean a = setGuildProperty(guildName,"members", memberList);
+            boolean b = UserManager.setUserProperty(member,"guild","none");
+            boolean c = UserManager.setUserProperty(member,"status","independent");
+            if(a && b && c) return DataManager.save();
         }
+        return false;
     }//길드멤버 제거. 길드에 해당 유저가 없다면 false 반환.
 
     public static boolean addGuildTerritory(String guildName, int index){
-        Optional<ChunkManager.ChunkProperty> chunkOpt = ChunkManager.getChunkProperty(index);
+        Optional<ChunkManager.ChunkProperty> chunkOpt = ChunkManager.getChunkProperties(index);
         if (chunkOpt.isEmpty()) return false;
         ChunkManager.ChunkProperty chunkProp = chunkOpt.get();
 
@@ -195,7 +204,7 @@ public class GuildManager {
     //성공하면 true, 청크가 존재하지 않거나 이미 어떤 세력이 점령 중이라면 false 반환. // 저장에 실패해도 false 반환.
 
     public static boolean removeGuildTerritory(String guildName, int index){
-        Optional<ChunkManager.ChunkProperty> chunkOpt = ChunkManager.getChunkProperty(index);
+        Optional<ChunkManager.ChunkProperty> chunkOpt = ChunkManager.getChunkProperties(index);
         if (chunkOpt.isEmpty()) return false;
         ChunkManager.ChunkProperty chunkProp = chunkOpt.get();
 
@@ -211,8 +220,57 @@ public class GuildManager {
         boolean sg = setGuildProperty(guildName,"claimed",territories);
         boolean sc = ChunkManager.setChunkProperty(index,"claimer","none");
         boolean ss = ChunkManager.setChunkProperty(index,"status","unclaimed");
-        if(sg && sc && ss) return DataManager.save(); else return false;
+        if(sg && sc && ss) return DataManager.save();
+        else return false;
     }
     //성공시 청크 데이터 status, claimer, 길드 데이터 claimed가 변경됨
     //성공하면 true, 점령되어있지 않거나 다른 세력이 점령 중이라면 false 반환. // 저장에 실패해도 false 반환.
+
+    public static boolean setGuildLeader(String guildName, String target){
+        Optional<String> targetGuild = UserManager.isMember(target);
+        if(targetGuild.isEmpty()) return false;
+        if("none".equals(targetGuild.get())) return false; // 길드가 다르거나 없으면 false 반환
+        if(guildName.equals(targetGuild.get())){
+            Optional<Map<String, Object>> isLeader = UserManager.isLeader(target);
+            if(isLeader.isPresent() && guildName.equals(isLeader.get().get("guildName")) && Boolean.TRUE.equals(isLeader.get().get("is"))){
+                Optional<GuildProperty> guildProp = getGuildProperties(guildName);
+                if(guildProp.isEmpty()) return false;
+                String currentLeader = guildProp.get().leader();
+                boolean a = UserManager.setUserProperty(currentLeader,"status","member"); // 기존 길드장 해임
+                boolean b = UserManager.setUserProperty(target,"status","leader"); // 새 길드장 등록
+                boolean c = setGuildProperty(guildName,"leader", target); // 새 길드장으로 변경
+                if(a && b && c) return DataManager.save();
+            }
+        }
+        return false;
+    }
+    // 리더 위임 메서드. 기존 리더는 멤버로 강등. 실패하면 false 반환.
+
+    public static boolean setGuildViceLeader(String guildName, String target){
+        Optional<String> targetGuild = UserManager.isMember(target);
+        if(targetGuild.isEmpty()) return false;
+        if("none".equals(targetGuild.get())) return false; // 길드가 다르거나 없으면 false 반환
+        if(guildName.equals(targetGuild.get())){
+            Optional<Map<String, Object>> isViceLeader = UserManager.isViceLeader(target);
+            if(isViceLeader.isPresent() && guildName.equals(isViceLeader.get().get("guildName")) && Boolean.TRUE.equals(isViceLeader.get().get("is"))){
+                Optional<GuildProperty> guildProp = getGuildProperties(guildName);
+                if(guildProp.isEmpty()) return false;
+                if(target.equals("none")){
+                    String currentViceLeader = guildProp.get().viceLeader();
+                    boolean a = UserManager.setUserProperty(currentViceLeader,"status","member"); //기존 부길드장 해임
+                    boolean b = setGuildProperty(guildName,"vice-leader", target); // 부길드장을 공석(none)으로 남김
+                    if(a && b) return DataManager.save();
+                } else{
+                    String currentViceLeader = guildProp.get().viceLeader();
+                    boolean a = UserManager.setUserProperty(currentViceLeader,"status","member"); // 기존 부길드장 해임
+                    boolean b = UserManager.setUserProperty(target,"status","vice-leader"); // 새 부길드장 등록
+                    boolean c = setGuildProperty(guildName,"vice-leader", target); // 새 부길드장으로 변경
+                    if(a && b && c) return DataManager.save();
+                }
+            }
+        }
+        return false;
+    }
+    //viceLeader칸은 none으로 비워질 수 있음. 즉 부길드장을 바꿀땐 target을 대상 유저로 하면 되고,
+    // 부길드장을 해임할때 none을 입력하면 공석으로 남길 수 있음.
 }

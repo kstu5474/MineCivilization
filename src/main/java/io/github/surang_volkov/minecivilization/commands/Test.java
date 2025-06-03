@@ -26,7 +26,7 @@ public class Test implements SubCommand {
         int playerZ = p.getChunk().getZ();
         int key = ChunkManager.getChunkIndex(playerX,playerZ);
         Optional<ChunkManager.ChunkCoordinate> coord = ChunkManager.getChunkCoordinate(key);
-        Optional<ChunkManager.ChunkProperty> chunkP = ChunkManager.getChunkProperty(key);
+        Optional<ChunkManager.ChunkProperty> chunkP = ChunkManager.getChunkProperties(key);
         if (coord.isEmpty() || chunkP.isEmpty()) return "알수없음";
         String claimer = chunkP.get().claimer();
         return "index-" + key + ", coordinate-(" + coord.get().x() + ", " + coord.get().z() + "), claimedby-" + claimer;

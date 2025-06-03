@@ -53,36 +53,7 @@ public class ChunkManager {
         }
         chunkConfig.set("chunks",chunkDataGenerated);
         DataManager.save();
-        DataManager.reload();
     } // 청크 생성 함수
-    private static List<String> getRandomBoost(){
-        Random random = new Random();
-        List<String> a = List.of("none");
-        List<String> b = List.of("prodamp-1");
-        List<String> c = List.of("huntamp-1");
-        List<String> output = List.of();
-        output = switch (random.nextInt(3)) {
-            case 0 -> a;
-            case 1 -> b;
-            case 2 -> c;
-            default -> output;
-        };
-        return output;
-    }
-    private static List<String> getRandomProduct(){
-        Random random = new Random();
-        List<String> a = List.of("IRON-1");
-        List<String> b = List.of("PAPER-1");
-        List<String> c = List.of("WHEAT-1");
-        List<String> output = List.of();
-        output = switch (random.nextInt(3)) {
-            case 0 -> a;
-            case 1 -> b;
-            case 2 -> c;
-            default -> output;
-        };
-        return output;
-    }
     private static class ChunkProperties {
         public Map<String,Integer> coordinate;
         public int level;
@@ -149,6 +120,37 @@ public class ChunkManager {
             }
         }
     } // 클래스 build 구조
+    //초기 청크 데이터 생성 과정
+
+    private static List<String> getRandomBoost(){
+        Random random = new Random();
+        List<String> a = List.of("none");
+        List<String> b = List.of("prodamp-1");
+        List<String> c = List.of("huntamp-1");
+        List<String> output = List.of();
+        output = switch (random.nextInt(3)) {
+            case 0 -> a;
+            case 1 -> b;
+            case 2 -> c;
+            default -> output;
+        };
+        return output;
+    }
+    private static List<String> getRandomProduct(){
+        Random random = new Random();
+        List<String> a = List.of("IRON-1");
+        List<String> b = List.of("PAPER-1");
+        List<String> c = List.of("WHEAT-1");
+        List<String> output = List.of();
+        output = switch (random.nextInt(3)) {
+            case 0 -> a;
+            case 1 -> b;
+            case 2 -> c;
+            default -> output;
+        };
+        return output;
+    }
+    //대충 랜덤생성 함수
 
     public static int getChunkIndex(int x, int z){
         FileConfiguration chunkConfig = DataManager.getChunkConfig();
@@ -198,7 +200,7 @@ public class ChunkManager {
     } // 인덱스에서 좌표를 반환하는 메서드. 0이나 존재하지 않는 index를 입력하면 empty()가 반환됨. 사용처에서 .isEmpty()로 확인할 수 있음
     public record ChunkCoordinate(int x, int z) {}
 
-    public static Optional<ChunkProperty> getChunkProperty(int index){
+    public static Optional<ChunkProperty> getChunkProperties(int index){
         FileConfiguration chunkConfig = DataManager.getChunkConfig();
         ConfigurationSection chunks = chunkConfig.getConfigurationSection("chunks");
         if (chunks == null) {
@@ -234,16 +236,16 @@ public class ChunkManager {
     }//성공하면 true 반환. 파일 저장,리로드 까지 진행 (되도록 이 함수를 직접 쓰지 말것)
 
     public static boolean isTerritoryNearbyGuild(String guildName,int index){
-        if (getChunkProperty(index).isEmpty()) {MineCivilization.infoLog(""); return false;}
+        if (getChunkProperties(index).isEmpty()) {MineCivilization.infoLog(""); return false;}
         Optional<ChunkCoordinate> coord = getChunkCoordinate(index);
         if(coord.isEmpty()) return false;
         int x = coord.get().x();
         int z = coord.get().z();
         boolean canClaim = false;
-        Optional<ChunkProperty> posX = getChunkProperty(getChunkIndex(x+1,z));
-        Optional<ChunkProperty> negX = getChunkProperty(getChunkIndex(x-1,z));
-        Optional<ChunkProperty> posZ = getChunkProperty(getChunkIndex(x,z+1));
-        Optional<ChunkProperty> negZ = getChunkProperty(getChunkIndex(x,z-1));
+        Optional<ChunkProperty> posX = getChunkProperties(getChunkIndex(x+1,z));
+        Optional<ChunkProperty> negX = getChunkProperties(getChunkIndex(x-1,z));
+        Optional<ChunkProperty> posZ = getChunkProperties(getChunkIndex(x,z+1));
+        Optional<ChunkProperty> negZ = getChunkProperties(getChunkIndex(x,z-1));
         if(posX.isPresent() && Objects.equals(posX.get().claimer(),guildName)) canClaim = true;
         if(negX.isPresent() && Objects.equals(negX.get().claimer(),guildName)) canClaim = true;
         if(posZ.isPresent() && Objects.equals(posZ.get().claimer(),guildName)) canClaim = true;
