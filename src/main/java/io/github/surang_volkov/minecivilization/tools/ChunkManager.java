@@ -1,15 +1,17 @@
 package io.github.surang_volkov.minecivilization.tools;
 
 import io.github.surang_volkov.minecivilization.MineCivilization;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static io.github.surang_volkov.minecivilization.tools.DataManager.getChunkConfig;
 
 public class ChunkManager {
-    public static void createChunkProperties(Map<String,Integer> coordinate, int limit){
+    public static boolean createChunkProperties(Map<String,Integer> coordinate, int limit){
         int number = 1;
         int r = 0;
         FileConfiguration chunkConfig = getChunkConfig();
@@ -51,8 +53,18 @@ public class ChunkManager {
             chunkDataGenerated.put(String.valueOf(number), new ChunkProperties.Builder()
                     .coordinate(new HashMap<>(coord)).boost(getRandomBoost()).product(getRandomProduct()).build());
         }
-        chunkConfig.set("chunks",chunkDataGenerated);
-        DataManager.save();
+
+
+        List<Integer> sortedKeys = chunkDataGenerated.keySet().stream().map(Integer::parseInt).sorted().toList();
+        Map<String, Map<String,Object>> sortedChunkData = new LinkedHashMap<>();
+
+
+        chunkConfig.set("chunks",sortedChunkData);
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"worldborder center 8 8");
+        int x = limit * 16;
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"worldborder set "+x);
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"worldborder warning distance 0");
+        return DataManager.save();
     } // 청크 생성 함수
     private static class ChunkProperties {
         public Map<String,Integer> coordinate;
@@ -121,6 +133,8 @@ public class ChunkManager {
         }
     } // 클래스 build 구조
     //초기 청크 데이터 생성 과정
+
+
 
     private static List<String> getRandomBoost(){
         Random random = new Random();
