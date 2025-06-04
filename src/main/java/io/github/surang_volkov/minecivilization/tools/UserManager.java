@@ -15,7 +15,7 @@ public class UserManager {
         if(users == null) return false;
         String uuid = getUserUUID(p.getName());
         for(String key : users.getKeys(false)){
-            if(Objects.equals(users.getString(key+".uuid"),uuid)){
+            if(uuid.equals(key+".uuid")){
                 return false;
             }
         }
