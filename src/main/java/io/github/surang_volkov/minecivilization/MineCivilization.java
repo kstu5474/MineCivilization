@@ -1,15 +1,12 @@
 package io.github.surang_volkov.minecivilization;
 
-import io.github.surang_volkov.minecivilization.events.ChatEvent;
+import io.github.surang_volkov.minecivilization.events.*;
 import io.github.surang_volkov.minecivilization.events.GUI.GuildGUIEvent;
 import io.github.surang_volkov.minecivilization.events.GUI.GuildOwnerEvent;
-import io.github.surang_volkov.minecivilization.events.MoveEvent;
 import io.github.surang_volkov.minecivilization.events.GUI.MainGUIEvent;
 import io.github.surang_volkov.minecivilization.tools.CommandCompleter;
 import io.github.surang_volkov.minecivilization.tools.DataManager;
 import io.github.surang_volkov.minecivilization.tools.McvCommand;
-import io.github.surang_volkov.minecivilization.events.BreakEvent;
-import io.github.surang_volkov.minecivilization.events.JoinEvent;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Objects;
@@ -30,6 +27,7 @@ public class MineCivilization extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new MainGUIEvent(), this);
         getServer().getPluginManager().registerEvents(new GuildGUIEvent(), this);
         getServer().getPluginManager().registerEvents(new GuildOwnerEvent(), this);
+        getServer().getPluginManager().registerEvents(new GUIOpeningEvent(), this);
         Objects.requireNonNull(getCommand("mcv")).setExecutor(new McvCommand());
         Objects.requireNonNull(getCommand("mcv")).setTabCompleter(new CommandCompleter());
         infoLog("플러그인 로드 완료");
