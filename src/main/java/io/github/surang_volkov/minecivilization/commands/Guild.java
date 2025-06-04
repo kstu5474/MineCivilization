@@ -12,7 +12,7 @@ public class Guild implements SubCommand {
         if (args.length == 0) {
             commandSender.sendMessage("§e사용법: /mcv guild <invite|leave|kick|status|create|mandate|promote|demote|delete>");
         }
-        switch (args[0].toLowerCase()){
+        switch (args[0]){
             case "invite":
                 commandSender.sendMessage("§e사용법: /mcv guild invite <username>");
                 break;

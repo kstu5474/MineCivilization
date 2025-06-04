@@ -44,15 +44,22 @@ public class GuildGUIEvent implements Listener {
                 p.sendMessage("생성할 길드의 이름을 적어주세요.(영어 소문자만 가능)");
                 p.closeInventory();
                 ChatEvent.waitForInput(p,input -> {
-                    if(!GuildManager.isGuild(input)){
-                        if (GuildManager.CreateGuild(p, input)) {
-                            p.sendMessage(input + " 길드를 성공적으로 생성했습니다!");
-                            GuildOwnerInv.open(p); // 생성했으면 오너 gui 열기
+                    Optional<String> isMember = UserManager.isMember(p.getName());
+                    if(isMember.isPresent() && isMember.get().equals("none")){
+                        if(!GuildManager.isGuild(input)){
+                            if (GuildManager.CreateGuild(p, input)) {
+                                p.sendMessage(input + " 길드를 성공적으로 생성했습니다!");
+                                GuildOwnerInv.open(p); // 생성했으면 오너 gui 열기
+                            }
+                        } else {
+                            GuildInv.open(p);
+                            p.sendMessage("이미 존재하는 길드이거나, 사용할 수 없는 길드이름입니다. 또는 길드를 생성하는데 실패했을 수도 있습니다.");
                         }
-                    } else {
+                    }else {
                         GuildInv.open(p);
-                        p.sendMessage("이미 존재하는 길드이거나, 사용할 수 없는 길드이름입니다. 또는 길드를 생성하는데 실패했을 수도 있습니다.");
+                        p.sendMessage("이미 길드에 가입되어 있습니다.");
                     }
+
                 });
                 // ChatEvent.waitForInput(p,input -> {});
                 // 입력 대기하는 로직임 참고바람 **

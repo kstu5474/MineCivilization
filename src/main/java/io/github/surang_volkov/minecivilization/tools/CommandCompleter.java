@@ -33,33 +33,33 @@ public class CommandCompleter implements TabCompleter {
         if(args.length == 1){
             List<String> completions = new ArrayList<>();
             for(String sub : sub1){
-                if(sub.startsWith(args[0].toLowerCase())){
+                if(sub.startsWith(args[0])){
                     completions.add(sub);
                 }
             }
             return completions;
         }
 
-        if (args.length == 2 && args[0].equalsIgnoreCase("chunk")){
+        if (args.length == 2 && args[0].equals("chunk")){
             List<String> completions = new ArrayList<>();
             for(String sub : subChunk){
-                if(sub.startsWith(args[1].toLowerCase())){
+                if(sub.startsWith(args[1])){
                     completions.add(sub);
                 }
             }
             return completions;
         }
-        if (args.length == 3 && args[0].equalsIgnoreCase("chunk") && args[1].equalsIgnoreCase("edit")){
+        if (args.length == 3 && args[0].equals("chunk") && args[1].equals("edit")){
             try {
                 return new ArrayList<>(Objects.requireNonNull(chunkConfig.getConfigurationSection("chunks")).getKeys(false));
             } catch (NullPointerException e){
                 return List.of("<none>");
             }
         }
-        if (args.length == 4 && args[0].equalsIgnoreCase("chunk") && args[1].equalsIgnoreCase("edit") && isInteger(args[2])){
+        if (args.length == 4 && args[0].equals("chunk") && args[1].equals("edit") && isInteger(args[2])){
             List<String> completions = new ArrayList<>();
             for(String sub : subChunkEditIndex){
-                if(sub.startsWith(args[3].toLowerCase())){
+                if(sub.startsWith(args[3])){
                     completions.add(sub);
                 }
             }
@@ -81,25 +81,25 @@ public class CommandCompleter implements TabCompleter {
             guildList = List.of("<none>");
         }
 
-        if (args.length == 2 && args[0].equalsIgnoreCase("guild")){
+        if (args.length == 2 && args[0].equals("guild")){
             List<String> completions = new ArrayList<>();
             for(String sub : subGuild){
-                if(sub.startsWith(args[1].toLowerCase())){
+                if(sub.startsWith(args[1])){
                     completions.add(sub);
                 }
             }
             return completions;
         }
-        if (args.length == 3 && args[0].equalsIgnoreCase("guild") && args[1].equalsIgnoreCase("invite")){
+        if (args.length == 3 && args[0].equals("guild") && args[1].equals("invite")){
             return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
         }
-        if (args.length == 3 && args[0].equalsIgnoreCase("guild") && args[1].equalsIgnoreCase("join")){
+        if (args.length == 3 && args[0].equals("guild") && args[1].equals("join")){
             return guildList;
         }
-        if (args.length == 3 && args[0].equalsIgnoreCase("guild") && args[1].equalsIgnoreCase("promote")){
+        if (args.length == 3 && args[0].equals("guild") && args[1].equals("promote")){
             return guildMembersList;
         }
-        if (args.length == 3 && args[0].equalsIgnoreCase("guild") && args[1].equalsIgnoreCase("demote")){
+        if (args.length == 3 && args[0].equals("guild") && args[1].equals("demote")){
             return guildMembersList;
         }
         return List.of();

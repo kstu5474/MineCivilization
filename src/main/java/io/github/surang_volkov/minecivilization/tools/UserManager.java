@@ -24,7 +24,8 @@ public class UserManager {
         userData.put("guild","none");
         userData.put("status","independent");
         users.set(p.getName(),userData);
-        return DataManager.save();
+        DataManager.save();
+        return DataManager.reload();
     } // 새로 온 유저인지 체크하고 그렇다면 유저 리스트에 정보를 추가함
 
     public static String getUserUUID(String name){

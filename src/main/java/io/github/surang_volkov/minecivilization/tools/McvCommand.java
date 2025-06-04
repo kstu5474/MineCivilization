@@ -34,7 +34,7 @@ public class McvCommand implements CommandExecutor {
 
             return true;
         }
-        SubCommand sub = subCommands.get(args[0].toLowerCase());
+        SubCommand sub = subCommands.get(args[0]);
         if (sub == null) {
             commandSender.sendMessage("§e알수 없는 명령어입니다: " + args[0]);
             return true;

@@ -6,15 +6,13 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static io.github.surang_volkov.minecivilization.tools.DataManager.getChunkConfig;
 
 public class ChunkManager {
     public static boolean createChunkProperties(Map<String,Integer> coordinate, int limit){
         int number = 1;
         int r = 0;
-        FileConfiguration chunkConfig = getChunkConfig();
+        FileConfiguration chunkConfig = DataManager.getChunkConfig();
         Map<String,Integer> coord = new HashMap<>(coordinate);
         Map<String , Map<String,Object>> chunkDataGenerated = new HashMap<>();
         chunkDataGenerated.put(String.valueOf(number), new ChunkProperties.Builder().level(1).claimer("none").status("unclaimed")
@@ -62,11 +60,12 @@ public class ChunkManager {
         }
 
         chunkConfig.set("chunks",sortedChunkData);
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"worldborder center 8 8");
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"worldborder center 8.0 8.0");
         int x = limit * 16;
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"worldborder set "+x);
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"worldborder warning distance 0");
-        return DataManager.save();
+        DataManager.save();
+        return DataManager.reload();
     } // 청크 생성 함수
     private static class ChunkProperties {
         public Map<String,Integer> coordinate;
@@ -135,8 +134,6 @@ public class ChunkManager {
         }
     } // 클래스 build 구조
     //초기 청크 데이터 생성 과정
-
-
 
     private static List<String> getRandomBoost(){
         Random random = new Random();
@@ -246,7 +243,7 @@ public class ChunkManager {
         FileConfiguration chunkConfig = DataManager.getChunkConfig();
         ConfigurationSection chunks = chunkConfig.getConfigurationSection("chunks");
         if(chunks == null) return false;
-        chunks.set(index+"."+target,input);//로직 미완성
+        chunks.set(index+"."+target,input);
         DataManager.save();
         return true;
     }//성공하면 true 반환. 파일 저장,리로드 까지 진행 (되도록 이 함수를 직접 쓰지 말것)

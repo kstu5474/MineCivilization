@@ -20,7 +20,7 @@ public class Chunk implements SubCommand {
         if (args.length == 0) {
             commandSender.sendMessage("§e사용법: /mcv chunk <edit|setorigin>");
         }
-        switch (args[0].toLowerCase()){
+        switch (args[0]){
             case "edit":
                 commandSender.sendMessage("§e사용법: /mcv chunk edit <index> <attributes> <arguments>");
                 break;

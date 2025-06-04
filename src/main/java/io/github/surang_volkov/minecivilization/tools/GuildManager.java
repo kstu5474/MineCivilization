@@ -8,6 +8,47 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class GuildManager {
+    public static boolean isGuild(String guildName){
+        FileConfiguration guildConfig = DataManager.getGuildsConfig();
+        ConfigurationSection guilds = guildConfig.getConfigurationSection("guilds");
+        if (guilds == null) return false;
+        for (String key : guilds.getKeys(false)) {
+            if (key.equals(guildName)) return true;
+        }
+        return false;
+    }
+
+    public static Optional<GuildProperty> getGuildProperties(String guildName){
+        FileConfiguration guildConfig = DataManager.getGuildsConfig();
+        ConfigurationSection guilds = guildConfig.getConfigurationSection("guilds");
+        if (guilds == null) {
+            MineCivilization.infoLog("길드 데이터가 없습니다.");
+            return Optional.empty();
+        }//예외처리
+        if(isGuild(guildName)){
+            ConfigurationSection guild = guilds.getConfigurationSection(guildName);
+            if (guild == null) return Optional.empty();
+            String rank = guild.getString("rank");
+            String leader = guild.getString("leader");
+            String viceLeader = guild.getString("vice-leader");
+            List<String> members = guild.getStringList("members");
+            List<String> claimed = guild.getStringList("claimed");
+            List<String> safeZone = guild.getStringList("safe-zone");
+            return Optional.of( new GuildProperty(rank, leader, viceLeader, members, claimed, safeZone));
+        }
+            MineCivilization.infoLog(guildName+" 길드를 찾을 수 없습니다.");
+            return Optional.empty();
+    }// 길드 정보 및 속성을 불러옴. 존재하지 않는 길드는 empty() 반환. isEmpty()로 체크 가능
+    public record GuildProperty(String rank, String leader, String viceLeader, List<String> members, List<String> claimed, List<String> safeZone){}
+
+    public static boolean setGuildProperty(String guildName, String target, Object input){
+        FileConfiguration guildConfig = DataManager.getGuildsConfig();
+        ConfigurationSection guilds = guildConfig.getConfigurationSection("guilds");
+        if (guilds == null){return false;}
+        guilds.set(guildName+"."+target,input);
+        return DataManager.save();
+    }//성공하면 true 반환. 파일 저장,리로드 까지 진행 (되도록 이 함수를 직접 쓰지 말것)
+
     public static boolean CreateGuild(Player p, String guildName){
         int index = ChunkManager.getChunkIndex(p.getChunk().getX(),p.getChunk().getZ());
         FileConfiguration guildConfig = DataManager.getGuildsConfig();
@@ -29,7 +70,8 @@ public class GuildManager {
         boolean c = ChunkManager.setChunkProperty(index,"claimer",guildName);
         boolean d = ChunkManager.setChunkProperty(index,"status","claimed");
         if(a&&b&&c&&d){
-            return DataManager.save();
+            DataManager.save();
+            return DataManager.reload();
         } else return false;
     }//길드 만들땐 서있는 위치에 처음 영토가 생김. 어떤식으로든 생성에 실패하면 false 반환
     private static class GuildProperties{
@@ -94,7 +136,8 @@ public class GuildManager {
             }
             if(removeGuildMethod("guilds."+guildName)) {
                 MineCivilization.infoLog("길드가 삭제되었습니다.");
-                return DataManager.save(); // 모든 작업 후 실행
+                DataManager.save();
+                return DataManager.reload();
             }
         }
         MineCivilization.errorLog("허가되지 않은 유저가 길드삭제를 시도했습니다.");
@@ -106,48 +149,6 @@ public class GuildManager {
         return true;
     }
     // 중요: 길드를 완전히 삭제해버리니까 길마만 삭제할 수 있도록 입력하는 유저 확인을 제대로 할 것.
-
-    public static boolean isGuild(String guildName){
-        FileConfiguration guildConfig = DataManager.getGuildsConfig();
-        ConfigurationSection guilds = guildConfig.getConfigurationSection("guilds");
-        if (guilds == null) return false;
-        for (String key : guilds.getKeys(false)) {
-            if (key.equals(guildName)) return true;
-        }
-        return false;
-    }
-
-    public static Optional<GuildProperty> getGuildProperties(String guildName){
-        FileConfiguration guildConfig = DataManager.getGuildsConfig();
-        ConfigurationSection guilds = guildConfig.getConfigurationSection("guilds");
-        if (guilds == null) {
-            MineCivilization.infoLog("길드 데이터가 없습니다.");
-            return Optional.empty();
-        }//예외처리
-        if(isGuild(guildName)){
-            ConfigurationSection guild = guilds.getConfigurationSection(guildName);
-            if (guild == null) return Optional.empty();
-            String rank = guild.getString("rank");
-            String leader = guild.getString("leader");
-            String viceLeader = guild.getString("vice-leader");
-            List<String> members = guild.getStringList("members");
-            List<String> claimed = guild.getStringList("claimed");
-            List<String> safeZone = guild.getStringList("safe-zone");
-            return Optional.of( new GuildProperty(rank, leader, viceLeader, members, claimed, safeZone));
-        }
-            MineCivilization.infoLog(guildName+" 길드를 찾을 수 없습니다.");
-            return Optional.empty();
-    }// 길드 정보 및 속성을 불러옴. 존재하지 않는 길드는 empty() 반환. isEmpty()로 체크 가능
-    public record GuildProperty(String rank, String leader, String viceLeader, List<String> members, List<String> claimed, List<String> safeZone){}
-
-    public static boolean setGuildProperty(String guildName, String target, Object input){
-        FileConfiguration guildConfig = DataManager.getGuildsConfig();
-        ConfigurationSection guilds = guildConfig.getConfigurationSection("guilds");
-        if (guilds == null){return false;}
-        guilds.set(guildName+"."+target,input);
-        DataManager.save();//로직 미완성
-        return true;
-    }//성공하면 true 반환. 파일 저장,리로드 까지 진행 (되도록 이 함수를 직접 쓰지 말것)
 
     public static boolean addGuildMember(String guildName,String newComer){
         if(!UserManager.isUser(newComer)) return false;
@@ -161,7 +162,8 @@ public class GuildManager {
         if(Objects.equals(userStatus,"independent")){
             memberList.add(newComer);
             setGuildProperty(guildName, "members", memberList);
-            return DataManager.save();
+            DataManager.save();
+            return DataManager.reload();
         }
         return false;
     }//길드멤버 추가. 길드에 이미 유저가 있다면 false 반환, 실패해도 false 반환
@@ -177,7 +179,10 @@ public class GuildManager {
             boolean a = setGuildProperty(guildName,"members", memberList);
             boolean b = UserManager.setUserProperty(member,"guild","none");
             boolean c = UserManager.setUserProperty(member,"status","independent");
-            if(a && b && c) return DataManager.save();
+            if(a && b && c) {
+                DataManager.save();
+                return DataManager.reload();
+            }
         }
         return false;
     }//길드멤버 제거. 길드에 해당 유저가 없다면 false 반환.
@@ -198,7 +203,10 @@ public class GuildManager {
         boolean sg = setGuildProperty(guildName,"claimed",territories);
         boolean sc = ChunkManager.setChunkProperty(index,"claimer",guildName);
         boolean ss = ChunkManager.setChunkProperty(index,"status","claimed");
-        if(sg && sc && ss) return DataManager.save(); else return false;
+        if(sg && sc && ss) {
+            DataManager.save();
+            return DataManager.reload();
+        } else return false;
     }
     //성공시 청크 데이터 status, claimer, 길드 데이터 claimed가 변경됨
     //성공하면 true, 청크가 존재하지 않거나 이미 어떤 세력이 점령 중이라면 false 반환. // 저장에 실패해도 false 반환.
@@ -220,7 +228,10 @@ public class GuildManager {
         boolean sg = setGuildProperty(guildName,"claimed",territories);
         boolean sc = ChunkManager.setChunkProperty(index,"claimer","none");
         boolean ss = ChunkManager.setChunkProperty(index,"status","unclaimed");
-        if(sg && sc && ss) return DataManager.save();
+        if(sg && sc && ss) {
+            DataManager.save();
+            return DataManager.reload();
+        }
         else return false;
     }
     //성공시 청크 데이터 status, claimer, 길드 데이터 claimed가 변경됨
@@ -239,7 +250,10 @@ public class GuildManager {
                 boolean a = UserManager.setUserProperty(currentLeader,"status","member"); // 기존 길드장 해임
                 boolean b = UserManager.setUserProperty(target,"status","leader"); // 새 길드장 등록
                 boolean c = setGuildProperty(guildName,"leader", target); // 새 길드장으로 변경
-                if(a && b && c) return DataManager.save();
+                if(a && b && c) {
+                    DataManager.save();
+                    return DataManager.reload();
+                }
             }
         }
         return false;
@@ -259,13 +273,19 @@ public class GuildManager {
                     String currentViceLeader = guildProp.get().viceLeader();
                     boolean a = UserManager.setUserProperty(currentViceLeader,"status","member"); //기존 부길드장 해임
                     boolean b = setGuildProperty(guildName,"vice-leader", target); // 부길드장을 공석(none)으로 남김
-                    if(a && b) return DataManager.save();
+                    if(a && b) {
+                        DataManager.save();
+                        return DataManager.reload();
+                    }
                 } else{
                     String currentViceLeader = guildProp.get().viceLeader();
                     boolean a = UserManager.setUserProperty(currentViceLeader,"status","member"); // 기존 부길드장 해임
                     boolean b = UserManager.setUserProperty(target,"status","vice-leader"); // 새 부길드장 등록
                     boolean c = setGuildProperty(guildName,"vice-leader", target); // 새 부길드장으로 변경
-                    if(a && b && c) return DataManager.save();
+                    if(a && b && c) {
+                        DataManager.save();
+                        return DataManager.reload();
+                    }
                 }
             }
         }
