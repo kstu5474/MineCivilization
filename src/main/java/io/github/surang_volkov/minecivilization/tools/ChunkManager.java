@@ -57,7 +57,9 @@ public class ChunkManager {
 
         List<Integer> sortedKeys = chunkDataGenerated.keySet().stream().map(Integer::parseInt).sorted().toList();
         Map<String, Map<String,Object>> sortedChunkData = new LinkedHashMap<>();
-
+        for (int key : sortedKeys) {
+            sortedChunkData.put(String.valueOf(key), chunkDataGenerated.get(String.valueOf(key)));
+        }
 
         chunkConfig.set("chunks",sortedChunkData);
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"worldborder center 8 8");
