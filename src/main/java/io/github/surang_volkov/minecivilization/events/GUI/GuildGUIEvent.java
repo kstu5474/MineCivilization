@@ -1,6 +1,7 @@
 package io.github.surang_volkov.minecivilization.events.GUI;
 
 
+import io.github.surang_volkov.minecivilization.MineCivilization;
 import io.github.surang_volkov.minecivilization.events.ChatEvent;
 import io.github.surang_volkov.minecivilization.gui.GuildGUI;
 import io.github.surang_volkov.minecivilization.gui.GuildOwnerGUI;
@@ -13,7 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,12 +30,12 @@ public class GuildGUIEvent implements Listener {
             return;
         if (ChatColor.stripColor(e.getView().getTitle()).equalsIgnoreCase("길드 메뉴")) {
             e.setCancelled(true);
-            if (Objects.requireNonNull(e.getCurrentItem()).getType() == Material.AIR && e.getCurrentItem() != null){
+            if (e.getCurrentItem() == null && Objects.requireNonNull(e.getCurrentItem()).getType() == Material.AIR){
+                MineCivilization.infoLog("허공 클릭 해서 null 받아짐");
             }
 
             else if (e.getCurrentItem().getItemMeta().getCustomModelData() == 1235) {
-                Optional<Map<String, Object>> isLeader = UserManager.isLeader(p.getName());
-                if(isLeader.isPresent() && Boolean.TRUE.equals(isLeader.get().get("is"))){
+                if(UserManager.isLeader(p.getName())){
                     GuildOwnerInv.open(p);
                 }//길드장 확인 로직 후 gui 열기
             } //길드장 gui 열기
@@ -72,8 +72,23 @@ public class GuildGUIEvent implements Listener {
             }//길드 탈퇴
 
             else if (e.getCurrentItem().getItemMeta().getCustomModelData() == 1238) {
-                Player player = (Player) e.getWhoClicked();
-
+                p.sendMessage("가입할 길드의 이름을 적어주세요.(영어 소문자만 가능)");
+                p.closeInventory();
+                ChatEvent.waitForInput(p,input -> {
+                    if(!UserManager.isMember(p.getName()) && GuildManager.isGuild(input) ){ // && !input.equals("dummy")
+                        if (GuildManager.addGuildMember(input, p.getName())) {
+                            p.sendMessage(input + " 길드에 가입되셨습니다!");
+                        }
+                    }else if(UserManager.isMember(p.getName())){
+                        Optional<UserManager.UserProperty> userProp = UserManager.getUserProperties(p.getName());
+                        if(userProp.isPresent()){
+                            p.sendMessage("이미 " + userProp.get().guild() + " 길드에 가입되어있습니다.");
+                        }
+                    }else{
+                        p.sendMessage(input + "는 존재하는 길드 이름이 아닙니다.");
+                    }
+                    GuildInv.open(p);
+                });
                 //수랑: 길드목록을 공개적으로 전부 보여주고 선택하게 하는게 어떨까
             }//길드 가입
         }

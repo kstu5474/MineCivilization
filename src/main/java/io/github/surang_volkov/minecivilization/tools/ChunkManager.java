@@ -248,21 +248,33 @@ public class ChunkManager {
         return true;
     }//성공하면 true 반환. 파일 저장,리로드 까지 진행 (되도록 이 함수를 직접 쓰지 말것)
 
-    public static boolean isTerritoryNearbyGuild(String guildName,int index){
-        if (getChunkProperties(index).isEmpty()) {MineCivilization.infoLog(""); return false;}
+    public static boolean isClaimed(int index){
+        Optional<ChunkProperty> chunkProp = getChunkProperties(index);
+        if(chunkProp.isEmpty()) return false;
+        return chunkProp.get().status().equals("claimed");
+    } // 점령된 영토인지 확인
+
+    public static boolean isTerritoryOf(String guildName,int index){
+        Optional<ChunkProperty> chunkProp = getChunkProperties(index);
+        if(chunkProp.isEmpty()) return false;
+        return chunkProp.get().claimer().equals(guildName);
+    } // 누구에게 점령된 영토인지 확인
+
+    public static boolean isNearByGuild(String guildName, int index){
+        if (getChunkProperties(index).isEmpty()) {MineCivilization.infoLog("청크 데이터가 비어있습니다."); return false;}
         Optional<ChunkCoordinate> coord = getChunkCoordinate(index);
         if(coord.isEmpty()) return false;
         int x = coord.get().x();
         int z = coord.get().z();
-        boolean canClaim = false;
         Optional<ChunkProperty> posX = getChunkProperties(getChunkIndex(x+1,z));
         Optional<ChunkProperty> negX = getChunkProperties(getChunkIndex(x-1,z));
         Optional<ChunkProperty> posZ = getChunkProperties(getChunkIndex(x,z+1));
         Optional<ChunkProperty> negZ = getChunkProperties(getChunkIndex(x,z-1));
-        if(posX.isPresent() && Objects.equals(posX.get().claimer(),guildName)) canClaim = true;
-        if(negX.isPresent() && Objects.equals(negX.get().claimer(),guildName)) canClaim = true;
-        if(posZ.isPresent() && Objects.equals(posZ.get().claimer(),guildName)) canClaim = true;
-        if(negZ.isPresent() && Objects.equals(negZ.get().claimer(),guildName)) canClaim = true;
-        return canClaim;
-    }//단순 계산 메서드. 인접 청크가 해당길 드의 영토인지 확인
+        if(posX.isPresent() && Objects.equals(posX.get().claimer(),guildName)) return true;
+        else if(negX.isPresent() && Objects.equals(negX.get().claimer(),guildName)) return true;
+        else if(posZ.isPresent() && Objects.equals(posZ.get().claimer(),guildName)) return true;
+        else if(negZ.isPresent() && Objects.equals(negZ.get().claimer(),guildName)) return true;
+        else return false;
+    }//단순 계산 메서드. 인접 청크가 해당 길드의 영토인지 확인. 아직 테스트 안해봄
+
 }

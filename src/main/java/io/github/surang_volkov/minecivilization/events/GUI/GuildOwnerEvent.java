@@ -34,18 +34,23 @@ public class GuildOwnerEvent implements Listener {
                 p.sendMessage("길드장 자리를 위임할 유저의 이름을 적어주세요.");
                 p.closeInventory();
                 ChatEvent.waitForInput(p,input -> {
+
                     Optional<UserManager.UserProperty> targetProp = UserManager.getUserProperties(input);
                     Optional<UserManager.UserProperty> userProp = UserManager.getUserProperties(p.getName());
-                    if(targetProp.isPresent() && userProp.isPresent()
-                            && targetProp.get().guild().equals(userProp.get().guild()) //타겟이 같은 길드에 있고
-                            && targetProp.get().status().equals("member")){ //타겟의 상태가 멤버라면 (부길드장은 안됨)
-                        GuildManager.setGuildLeader(userProp.get().guild(),input);
-                        p.sendMessage("길드장 자리가 위임되었습니다.");
-                        GuildOwnerInv.open(p);
+                    if(targetProp.isPresent() && userProp.isPresent()){
+                        if(GuildManager.setGuildLeader(userProp.get().guild(),input)){
+                            //재확인 코드 추가할것
+                            p.sendMessage("길드장 자리가 위임되었습니다.");
+                            GuildInv.open(p);
+                        }else{
+                            p.sendMessage("현재 길드장 또는 부길드장이거나, 같은 길드원이 아닌 유저입니다.");
+                            GuildOwnerInv.open(p);
+                        }
                     }else{
                         p.sendMessage("유효한 유저이름이 아닙니다.");
                         GuildOwnerInv.open(p);
                     }
+
                 });
             } // 길드장 위임
 
@@ -53,19 +58,22 @@ public class GuildOwnerEvent implements Listener {
                 p.sendMessage("부길드장으로 임명할 유저의 이름을 적어주세요.");
                 p.closeInventory();
                 ChatEvent.waitForInput(p,input -> {
+
                     Optional<UserManager.UserProperty> targetProp = UserManager.getUserProperties(input);
                     Optional<UserManager.UserProperty> userProp = UserManager.getUserProperties(p.getName());
-                    if(targetProp.isPresent() && userProp.isPresent()
-                            && targetProp.get().guild().equals(userProp.get().guild()) //타겟이 같은 길드에 있고
-                            && targetProp.get().status().equals("member")){ //타겟의 상태가 멤버라면
+                    if(targetProp.isPresent() && userProp.isPresent()){
                         Optional<GuildManager.GuildProperty> guildProp = GuildManager.getGuildProperties(userProp.get().guild());
                         if(guildProp.isPresent()){
                             if(guildProp.get().viceLeader().equals("none")){
-                                GuildManager.setGuildViceLeader(userProp.get().guild(),input);
-                                p.sendMessage("부길드장이 임명되었습니다.");
-                                GuildOwnerInv.open(p);
+                                if(GuildManager.setGuildViceLeader(userProp.get().guild(),input)){
+                                    p.sendMessage("부길드장이 임명되었습니다.");
+                                    GuildOwnerInv.open(p);
+                                }else{
+                                    p.sendMessage("현재 길드장 또는 부길드장이거나, 같은 길드원이 아닌 유저입니다.");
+                                    GuildOwnerInv.open(p);
+                                }
                             } else{
-                                p.sendMessage("이미 부길드장이 있습니다.");
+                                p.sendMessage("이미 부길드장이 있습니다. 부길드장을 변경하시려면 현재 부길드장을 해임 후 진행해주세요.");
                                 GuildOwnerInv.open(p);
                             }
                         }
@@ -73,6 +81,7 @@ public class GuildOwnerEvent implements Listener {
                         p.sendMessage("유효한 유저이름이 아닙니다.");
                         GuildOwnerInv.open(p);
                     }
+
                 });
             } // 부길드장 임명
 
@@ -80,6 +89,7 @@ public class GuildOwnerEvent implements Listener {
                 p.sendMessage("정말로 부길드장을 해임하시겠습니까? 동의하시면 confirm을 적어주세요.");
                 p.closeInventory();
                 ChatEvent.waitForInput(p,input -> {
+
                     if(input.equals("confirm")){
                         Optional<UserManager.UserProperty> userProp = UserManager.getUserProperties(p.getName());
                         if(userProp.isPresent()){
@@ -88,6 +98,7 @@ public class GuildOwnerEvent implements Listener {
                             GuildOwnerInv.open(p);
                         }
                     }
+
                 });
             } // 부길드장 해임
 
@@ -95,6 +106,7 @@ public class GuildOwnerEvent implements Listener {
                 p.sendMessage("정말로 삭제하시겠습니까? 동의하시면 길드의 이름을 적어주세요.");
                 p.closeInventory();
                 ChatEvent.waitForInput(p, input -> {
+
                     Optional<UserManager.UserProperty> userProp = UserManager.getUserProperties(p.getName());
                     if(userProp.isPresent() && Objects.equals(input,userProp.get().guild())){
                         if(GuildManager.removeGuild(p, input)) p.sendMessage("길드가 성공적으로 삭제되었습니다.");
@@ -103,6 +115,7 @@ public class GuildOwnerEvent implements Listener {
                         p.sendMessage("취소되었습니다.");
                         GuildOwnerInv.open(p);
                     }
+
                 });
 
             } // 길드 해산
